@@ -1,3 +1,4 @@
+import 'package:c_admin/view/reportView/reportDetail/report_detail.dart';
 import './route_names.dart';
 import '../view/welcomeView/cparkingDetails/cparkingDetails.dart';
 import '../view/reportView/report_view.dart';
@@ -14,6 +15,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(ReportOverViewScreen());
     case UserRoute:
       return _getPageRoute(UserView());
+    case ReportDetail:
+      return _getPageRoute(ReportDetailView());
     default:
       return _getPageRoute(CparkingDetails());
   }

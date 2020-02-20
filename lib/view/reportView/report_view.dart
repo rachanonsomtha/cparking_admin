@@ -1,8 +1,10 @@
 import 'package:provider/provider.dart';
 import '../../provider/reportProvider/report_provider.dart';
 import '../../provider/reportProvider/report.dart';
-import '../reportView/reportItem/report_item.dart';
 import 'package:flutter/material.dart';
+import '../../loader/color_loader3.dart';
+import '../../widgets/badge.dart';
+import './custom_dialog.dart';
 
 class ReportOverViewScreen extends StatefulWidget {
   static const routeName = '/report-view';
@@ -15,6 +17,19 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   bool _isInit = true;
   bool _isLoading = false;
   List<Report> reports;
+  List<DataRow> reportDataRowList;
+  bool sort = true;
+  int columnIndex;
+  List<DataRow> forSortingreport;
+  List<Report> selectedReports;
+
+  @override
+  void initState() {
+    sort = false;
+    selectedReports = [];
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -24,6 +39,8 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
       });
       Provider.of<ReportsProvider>(context).fetchReport().then((_) {
         reports = Provider.of<ReportsProvider>(context).reports;
+        // print(reportDataRowList);
+      }).then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -59,6 +76,85 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
     }
   }
 
+  onSortColumn(int col, bool ascending) {
+    if (col == 1) {
+      if (ascending) {
+        reports.sort((a, b) =>
+            DateTime.parse(a.dateTime).compareTo(DateTime.parse(b.dateTime)));
+      } else {
+        reports.sort((a, b) =>
+            DateTime.parse(b.dateTime).compareTo(DateTime.parse(a.dateTime)));
+      }
+    }
+  }
+
+  onSelectedRow(bool selected, Report report) async {
+    setState(() {
+      if (selected) {
+        selectedReports.add(report);
+      } else {
+        selectedReports.remove(report);
+      }
+    });
+  }
+
+  DataTable dataBody() {
+    return DataTable(
+      sortColumnIndex: 1,
+      sortAscending: sort,
+      // showCheckboxColumn: true,
+      columns: [
+        DataColumn(
+          label: Text('Rep.id'),
+        ),
+        DataColumn(
+          label: Text('Date'),
+          onSort: (columnIndex, ascending) {
+            setState(() {
+              sort = !sort;
+            });
+            onSortColumn(columnIndex, ascending);
+          },
+        ),
+        DataColumn(
+          label: Text('Time'),
+        ),
+        DataColumn(
+          numeric: true,
+          label: Text('Availability'),
+        )
+      ],
+      rows: reports
+          .map(
+            (report) => DataRow(
+              selected: selectedReports.contains(report),
+              onSelectChanged: (b) {
+                onSelectedRow(b, report);
+              },
+              cells: [
+                DataCell(
+                  Text(report.id.toString()),
+                ),
+                DataCell(
+                  Text(
+                      '${DateTime.parse(report.dateTime).day}/${DateTime.parse(report.dateTime).month}/${DateTime.parse(report.dateTime).year}'),
+                ),
+                DataCell(
+                  Text(
+                      '${DateTime.parse(report.dateTime).hour}:${DateTime.parse(report.dateTime).minute.toString().padLeft(2, '0')}'),
+                ),
+                DataCell(
+                  Text(
+                    report.availability.toString(),
+                  ),
+                )
+              ],
+            ),
+          )
+          .toList(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final report = Provider.of<ReportsProvider>(context);
@@ -85,35 +181,71 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
             )
           : _isLoading
               ? Center(
-                  child: Text('Color loading3'),
+                  child: Column(
+                    children: <Widget>[
+                      ColorLoader3(),
+                      Text(
+                        'Loading Reports',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 18,
+                        ),
+                      )
+                    ],
+                  ),
                 )
               : Container(
-                  height: 600,
-                  child: Padding(
-                    padding: EdgeInsets.all(8),
-                    child: ListView.builder(
-                      itemCount: reports.length,
-                      itemBuilder: (_, index) => ChangeNotifierProvider.value(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ReportItem(
-                                // report.reports[index].userName,
-                                // report.reports[index].lifeTime,
-                                // report.reports[index].dateTime.toString(),
-                                // report.reports[index].imageUrl,
-                                // report.reports[index].availability,
-                                // report.reports[index].isPromoted,
-                                // report.reports[index].score,
-                                ),
-                            Divider(),
-                          ],
-                        ),
-                        value: reports[index],
-                      ),
-                    ),
+                  width: double.infinity,
+                  child: SingleChildScrollView(
+                    child: dataBody(),
                   ),
                 ),
+      floatingActionButton: Badge(
+        value: selectedReports.length.toString(),
+        color: Colors.red,
+        child: FloatingActionButton(
+          elevation: 0,
+          child: Icon(Icons.delete),
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => CustomDialog(
+                title: "Comfirmed?",
+                description: "Confirming will delete all selected reports",
+                buttonText: "Discard",
+                confirmedText: "Confirmed",
+              ),
+            );
+          },
+        ),
+      ),
+      // Container(
+      //     height: 600,
+      //     child: Padding(
+      //       padding: EdgeInsets.all(8),
+      //       child: ListView.builder(
+      //         itemCount: reports.length,
+      //         itemBuilder: (_, index) => ChangeNotifierProvider.value(
+      //           child: Column(
+      //             mainAxisSize: MainAxisSize.min,
+      //             children: <Widget>[
+      //               ReportItem(
+      //                   // report.reports[index].userName,
+      //                   // report.reports[index].lifeTime,
+      //                   // report.reports[index].dateTime.toString(),
+      //                   // report.reports[index].imageUrl,
+      //                   // report.reports[index].availability,
+      //                   // report.reports[index].isPromoted,
+      //                   // report.reports[index].score,
+      //                   ),
+      //               Divider(),
+      //             ],
+      //           ),
+      //           value: reports[index],
+      //         ),
+      //       ),
+      //     ),
+      //   ),
     );
   }
 }

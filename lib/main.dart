@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           textTheme: Theme.of(context).textTheme.apply(
                 fontFamily: 'Open Sans',
               ),
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.grey,
         ),
         home: HomeView(),
         routes: {

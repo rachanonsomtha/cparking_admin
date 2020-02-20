@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import '../../../provider/reportProvider/report.dart';
 //rating
 import 'dart:math';
+import '../../../Navigation/navigation.dart';
+import '../../../locator.dart';
+import '../../../routing/route_names.dart';
 
 class ReportItem extends StatefulWidget {
   // final report = Provider.of<ReportsProvider>(context, listen: false);
@@ -62,7 +65,9 @@ class _ReportItemState extends State<ReportItem> {
             Container(
               width: MediaQuery.of(context).size.height / 8,
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  locator<NavigationService>().navigateTo(ReportDetail);
+                },
                 child: ClipRRect(
                   borderRadius: BorderRadius.all(
                     Radius.circular(12),
