@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import './report.dart';
 import 'dart:convert';
 import 'dart:collection';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class ReportsProvider with ChangeNotifier {
   List<Report> _reports = [];
@@ -70,6 +71,47 @@ class ReportsProvider with ChangeNotifier {
 
   Report findById(String id) {
     return _reports.firstWhere((rep) => rep.id == id);
+  }
+
+  Future<void> deleteReport(Report report) async {
+    String keyName;
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('reports/${report.loc}/${report.imgName}');
+    storageReference.delete().then((_) {
+      print('delete succesfully');
+    }).catchError((_) {
+      print(_);
+    });
+    final url1 =
+        'https://cparking-ecee0.firebaseio.com/reports/${report.id}.json';
+    try {
+      await http.delete(url1, headers: headers).then((_) {
+        print('deletion report from user success');
+        removeReport(report.id);
+        notifyListeners();
+      }).then((_) async {
+        final url2 =
+            'https://cparking-ecee0.firebaseio.com/users/$userId/reportsId.json';
+
+        final response = await http.get(url2);
+        final decodeData = json.decode(response.body) as Map<String, dynamic>;
+        decodeData.forEach((reportId, reportData) {
+          if (reportData == report.id) {
+            keyName = reportId;
+          }
+        });
+      }).then((_) async {
+        final url3 =
+            'https://cparking-ecee0.firebaseio.com/users/$userId/reportsId/$keyName.json';
+
+        await http.delete(url3, headers: headers).then((_) {
+          print("delete from reportFolder complete");
+        });
+      });
+    } catch (error) {
+      print(error);
+    }
   }
 
   Future<void> fetchReport() async {

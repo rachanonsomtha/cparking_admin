@@ -3,8 +3,11 @@ import '../../provider/reportProvider/report_provider.dart';
 import '../../provider/reportProvider/report.dart';
 import 'package:flutter/material.dart';
 import '../../loader/color_loader3.dart';
-import '../../widgets/badge.dart';
-import './custom_dialog.dart';
+import '../../widgets/fab_button.dart';
+import '../../Navigation/navigation.dart';
+import '../../routing/route_names.dart';
+import '../../locator.dart';
+import 'package:c_admin/routing/router.dart';
 
 class ReportOverViewScreen extends StatefulWidget {
   static const routeName = '/report-view';
@@ -19,14 +22,15 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   List<Report> reports;
   List<DataRow> reportDataRowList;
   bool sort = true;
+  bool _dialVisible = true;
+
   int columnIndex;
   List<DataRow> forSortingreport;
-  List<Report> selectedReports;
+  final NavigationService _navigationService = locator<NavigationService>();
 
   @override
   void initState() {
     sort = false;
-    selectedReports = [];
     // TODO: implement initState
     super.initState();
   }
@@ -55,7 +59,12 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   }
 
   Future<void> _fetchReport(BuildContext context, String name) async {
+    setState(() {
+      _isLoading = true;
+    });
     Provider.of<ReportsProvider>(context).fetchReport().then((_) {
+      reports = Provider.of<ReportsProvider>(context).reports;
+    }).then((_) {
       setState(() {
         _isLoading = false;
       });
@@ -88,16 +97,6 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
     }
   }
 
-  onSelectedRow(bool selected, Report report) async {
-    setState(() {
-      if (selected) {
-        selectedReports.add(report);
-      } else {
-        selectedReports.remove(report);
-      }
-    });
-  }
-
   DataTable dataBody() {
     return DataTable(
       sortColumnIndex: 1,
@@ -127,9 +126,11 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
       rows: reports
           .map(
             (report) => DataRow(
-              selected: selectedReports.contains(report),
+              selected: false,
               onSelectChanged: (b) {
-                onSelectedRow(b, report);
+                print(report.id);
+                _navigationService.navigateToWithData(ReportDetail, report.id);
+//navigate to report detail screen
               },
               cells: [
                 DataCell(
@@ -194,31 +195,52 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
                     ],
                   ),
                 )
-              : Container(
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    child: dataBody(),
+              : SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Text(
+                              'Option1',
+                              style: TextStyle(
+                                fontFamily: 'Open Sans',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              'Option2',
+                              style: TextStyle(
+                                fontFamily: 'Open Sans',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                              ),
+                            ),
+                            Text(
+                              'Option3',
+                              style: TextStyle(
+                                fontFamily: 'Open Sans',
+                                fontWeight: FontWeight.w400,
+                                fontSize: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: dataBody(),
+                      ),
+                    ],
                   ),
                 ),
-      floatingActionButton: Badge(
-        value: selectedReports.length.toString(),
-        color: Colors.red,
-        child: FloatingActionButton(
-          elevation: 0,
-          child: Icon(Icons.delete),
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => CustomDialog(
-                title: "Comfirmed?",
-                description: "Confirming will delete all selected reports",
-                buttonText: "Discard",
-                confirmedText: "Confirmed",
-              ),
-            );
-          },
-        ),
-      ),
+
+      floatingActionButton: FancyFab(),
       // Container(
       //     height: 600,
       //     child: Padding(
