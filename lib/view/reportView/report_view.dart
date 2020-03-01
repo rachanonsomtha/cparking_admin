@@ -3,11 +3,9 @@ import '../../provider/reportProvider/report_provider.dart';
 import '../../provider/reportProvider/report.dart';
 import 'package:flutter/material.dart';
 import '../../loader/color_loader3.dart';
-import '../../widgets/fab_button.dart';
 import '../../Navigation/navigation.dart';
 import '../../routing/route_names.dart';
 import '../../locator.dart';
-import 'package:c_admin/routing/router.dart';
 
 class ReportOverViewScreen extends StatefulWidget {
   static const routeName = '/report-view';
@@ -23,6 +21,10 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   List<DataRow> reportDataRowList;
   bool sort = true;
   bool _dialVisible = true;
+
+  bool _today;
+  bool _week;
+  bool _all = true;
 
   int columnIndex;
   List<DataRow> forSortingreport;
@@ -119,6 +121,9 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
           label: Text('Time'),
         ),
         DataColumn(
+          label: Text('Location'),
+        ),
+        DataColumn(
           numeric: true,
           label: Text('Availability'),
         )
@@ -126,9 +131,8 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
       rows: reports
           .map(
             (report) => DataRow(
-              selected: false,
               onSelectChanged: (b) {
-                print(report.id);
+                // print(report.id);
                 _navigationService.navigateToWithData(ReportDetail, report.id);
 //navigate to report detail screen
               },
@@ -143,6 +147,11 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
                 DataCell(
                   Text(
                       '${DateTime.parse(report.dateTime).hour}:${DateTime.parse(report.dateTime).minute.toString().padLeft(2, '0')}'),
+                ),
+                DataCell(
+                  Text(
+                    report.loc,
+                  ),
                 ),
                 DataCell(
                   Text(
@@ -202,28 +211,46 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            Text(
-                              'Option1',
-                              style: TextStyle(
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
+                            OutlineButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              color: Colors.black87,
+                              hoverColor: Colors.orange[100],
+                              onPressed: () {},
+                              child: Text(
+                                'Today',
+                                style: TextStyle(
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                            Text(
-                              'Option2',
-                              style: TextStyle(
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
+                            OutlineButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              color: Colors.black87,
+                              hoverColor: Colors.orange[100],
+                              onPressed: () {},
+                              child: Text(
+                                'This Week',
+                                style: TextStyle(
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
-                            Text(
-                              'Option3',
-                              style: TextStyle(
-                                fontFamily: 'Open Sans',
-                                fontWeight: FontWeight.w400,
-                                fontSize: 18,
+                            OutlineButton(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              color: Colors.black87,
+                              hoverColor: Colors.orange[100],
+                              onPressed: () {},
+                              child: Text(
+                                'All Time',
+                                style: TextStyle(
+                                  fontFamily: 'Open Sans',
+                                  fontSize: 18,
+                                ),
                               ),
                             ),
                           ],
@@ -239,35 +266,6 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
                     ],
                   ),
                 ),
-
-      floatingActionButton: FancyFab(),
-      // Container(
-      //     height: 600,
-      //     child: Padding(
-      //       padding: EdgeInsets.all(8),
-      //       child: ListView.builder(
-      //         itemCount: reports.length,
-      //         itemBuilder: (_, index) => ChangeNotifierProvider.value(
-      //           child: Column(
-      //             mainAxisSize: MainAxisSize.min,
-      //             children: <Widget>[
-      //               ReportItem(
-      //                   // report.reports[index].userName,
-      //                   // report.reports[index].lifeTime,
-      //                   // report.reports[index].dateTime.toString(),
-      //                   // report.reports[index].imageUrl,
-      //                   // report.reports[index].availability,
-      //                   // report.reports[index].isPromoted,
-      //                   // report.reports[index].score,
-      //                   ),
-      //               Divider(),
-      //             ],
-      //           ),
-      //           value: reports[index],
-      //         ),
-      //       ),
-      //     ),
-      //   ),
     );
   }
 }

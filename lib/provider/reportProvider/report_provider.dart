@@ -35,24 +35,6 @@ class ReportsProvider with ChangeNotifier {
     return _reports.length;
   }
 
-//////
-  List<Report> get userReports {
-    return [..._userReports];
-  }
-
-  int get userReportCount {
-    return _userReports.length;
-  }
-
-/////
-  List<Report> get locReports {
-    return [..._reportsLoc];
-  }
-
-  int get locReportsCount {
-    return _reportsLoc.length;
-  }
-
   int get lifeTime {
     return _lifeTime;
   }
@@ -64,8 +46,6 @@ class ReportsProvider with ChangeNotifier {
   void removeReport(String id) {
     // final prodIndex = _items.indexWhere((prod) => prod.id == id);
     _reports.removeWhere((rep) => rep.id == id);
-    _userReports.removeWhere((rep) => rep.id == id);
-    _reportsLoc.removeWhere((rep) => rep.id == id);
     notifyListeners();
   }
 
@@ -92,7 +72,7 @@ class ReportsProvider with ChangeNotifier {
         notifyListeners();
       }).then((_) async {
         final url2 =
-            'https://cparking-ecee0.firebaseio.com/users/$userId/reportsId.json';
+            'https://cparking-ecee0.firebaseio.com/users/${report.userName}/reportsId.json';
 
         final response = await http.get(url2);
         final decodeData = json.decode(response.body) as Map<String, dynamic>;
@@ -103,7 +83,7 @@ class ReportsProvider with ChangeNotifier {
         });
       }).then((_) async {
         final url3 =
-            'https://cparking-ecee0.firebaseio.com/users/$userId/reportsId/$keyName.json';
+            'https://cparking-ecee0.firebaseio.com/users/${report.userName}/reportsId/$keyName.json';
 
         await http.delete(url3, headers: headers).then((_) {
           print("delete from reportFolder complete");
