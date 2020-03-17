@@ -120,38 +120,38 @@ class _ReportDetailViewState extends State<ReportDetailView> {
                   _buildReportName(report),
                   _buildDetail(report),
                   _buildSeparator(screenSize),
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    color: Colors.redAccent,
-                    onPressed: () {
-                      Provider.of<ReportsProvider>(context)
-                          .deleteReport(report);
-                      Navigator.of(context).pop();
-                    },
-                    child: Container(
-                      height: 30,
-                      width: 200,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                          Text(
-                            'Delete report',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  // RaisedButton(
+                  //   shape: RoundedRectangleBorder(
+                  //     borderRadius: BorderRadius.circular(30),
+                  //   ),
+                  //   color: Colors.redAccent,
+                  //   onPressed: () {
+                  //     Provider.of<ReportsProvider>(context)
+                  //         .deleteReport(report);
+                  //     Navigator.of(context).pop();
+                  //   },
+                  //   child: Container(
+                  //     height: 30,
+                  //     width: 200,
+                  //     child: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  //       children: <Widget>[
+                  //         Icon(
+                  //           Icons.delete,
+                  //           color: Colors.white,
+                  //         ),
+                  //         Text(
+                  //           'Delete report',
+                  //           style: TextStyle(
+                  //             fontSize: 20,
+                  //             fontWeight: FontWeight.w800,
+                  //             color: Colors.white,
+                  //           ),
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             )
