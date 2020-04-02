@@ -1,10 +1,11 @@
 import 'package:c_admin/locator.dart';
+import 'package:c_admin/provider/userProvider/user_provider.dart';
 import 'package:c_admin/view/home_view/home_view.dart';
-import 'package:c_admin/view/userView/user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './provider/reportProvider/report_provider.dart';
 import './view/reportView/report_view.dart';
+import './view/userView/user_view.dart';
 
 void main() {
   setupLocator();
@@ -19,7 +20,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(
           value: ReportsProvider(null, null),
-        )
+        ),
+        ChangeNotifierProvider.value(
+          value: UserProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

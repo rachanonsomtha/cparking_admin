@@ -44,7 +44,6 @@ class ReportsProvider with ChangeNotifier {
   }
 
   void removeReport(String id) {
-    // final prodIndex = _items.indexWhere((prod) => prod.id == id);
     _reports.removeWhere((rep) => rep.id == id);
     notifyListeners();
   }

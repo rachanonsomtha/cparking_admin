@@ -43,7 +43,7 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<ReportsProvider>(context).fetchReport().then((_) {
+      Provider.of<ReportsProvider>(context).fetchReport().whenComplete(() {
         reports = Provider.of<ReportsProvider>(context).reports;
         // print(reportDataRowList);
       }).then((_) {
@@ -134,7 +134,7 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
               onSelectChanged: (b) {
                 // print(report.id);
                 _navigationService.navigateToWithData(ReportDetail, report.id);
-//navigate to report detail screen
+                //navigate to report detail screen
               },
               cells: [
                 DataCell(

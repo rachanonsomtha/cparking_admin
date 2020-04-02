@@ -1,73 +1,40 @@
+import 'package:c_admin/provider/userProvider/user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 import 'dart:convert';
 
 import 'dart:async';
-import '../userProvider/user.dart';
 
-class UserProvider extends ChangeNotifierProvider {
-  String _token;
-  DateTime _expiryDate;
-  String _userId;
-  Timer _authTimer;
-  // String _userName;
+class UserProvider extends ChangeNotifier {
+  List<UserData> users = [];
 
-  UserData _userData;
-
-  bool get isAuth {
-    return _token != null;
+  int get usersCount {
+    return users.length;
   }
 
-  String get token {
-    if (_expiryDate != null &&
-        _expiryDate.isAfter(DateTime.now()) &&
-        _token != null) {
-      return _token;
-    }
-    return null;
-  }
+  Future<List<UserData>> getUsers() async {
+    var data =
+        await http.get("https://cparking-ecee0.firebaseio.com/users.json");
 
-  String get userId {
-    return _userId;
-  }
+    var jsonData = json.decode(data.body) as Map<String, dynamic>;
 
-  UserData get userData {
-    // print(userData.userName);
-    return _userData;
-  }
-
-  int get userReportsCount {
-    return _userData.reports.length;
-  }
-
-  UserData _tempUserData;
-
-  UserData get tempUserData {
-    return _tempUserData;
-  }
-
-  Future<void> fetchUserDataFromUserId(String userIds) async {
-    print(userId);
-    final url =
-        'https://cparking-ecee0.firebaseio.com/users/$userIds/profile.json';
-    try {
-      await http.get(url).then((value) {
-        final decodeData = json.decode(value.body) as Map<String, dynamic>;
-        decodeData.forEach((userId, userData) {
-          // print(userData['profileImageUrl']);
-          _tempUserData = UserData(
-            userName: userData['userName'],
-            id: userId,
-            score: userData['score'],
-            profileImageUrl: userData['profileImageUrl'].toString(),
-            reports: [],
-          );
-        });
+    jsonData.forEach((key, value) {
+      // print(value['profile']);
+      var decodeData = value['profile'] as Map<String, dynamic>;
+      decodeData.forEach((key, value) {
+        UserData user = UserData(
+          id: key,
+          email: value['email'],
+          profileImageUrl: value['profileImageUrl'],
+          userName: value['userName'],
+          score: value['score'],
+          verified: value['verified'],
+        );
+        print(user);
+        users.add(user);
       });
-    } catch (error) {
-      print(error);
-    }
+    });
+
+    return users;
   }
 }

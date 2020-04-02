@@ -20,6 +20,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return _getPageRoute(UserView(), settings);
     case ReportDetail:
       return _getPageRoute(ReportDetailView(), settings);
+    case UserDetail:
+      return _getPageRoute(UserDetailPage(), settings);
     default:
       return _getPageRoute(CparkingDetails(), settings);
   }
