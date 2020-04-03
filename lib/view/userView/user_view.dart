@@ -167,35 +167,35 @@ class _UserDetailPageState extends State<UserDetailPage> {
 
     return Container(
       child: Center(
-          child: Column(
-        children: <Widget>[
-          CircleAvatar(
-            backgroundImage: NetworkImage(user.profileImageUrl),
-            maxRadius: 100,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            "${user.userName}",
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.w400,
+          child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            CircleAvatar(
+              backgroundImage: NetworkImage(user.profileImageUrl),
+              maxRadius: 100,
             ),
-          ),
-          Text(
-            "Email: ${user.email}",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w200,
+            SizedBox(
+              height: 20,
             ),
-          ),
-          Text(
-            "Score: ${user.score.toString()}",
-            style: TextStyle(fontSize: 20),
-          ),
-          SingleChildScrollView(
-            child: StreamBuilder(
+            Text(
+              "${user.userName}",
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            Text(
+              "Email: ${user.email}",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w200,
+              ),
+            ),
+            Text(
+              "Score: ${user.score.toString()}",
+              style: TextStyle(fontSize: 20),
+            ),
+            StreamBuilder(
               stream: Provider.of<UserProvider>(context)
                   .getReportsFromUserId(user.reports)
                   .catchError((error) {
@@ -241,9 +241,9 @@ class _UserDetailPageState extends State<UserDetailPage> {
                   );
                 }
               },
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       )),
     );
   }
