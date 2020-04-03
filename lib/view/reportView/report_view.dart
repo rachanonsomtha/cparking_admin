@@ -191,71 +191,61 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
             )
           : _isLoading
               ? Center(
-                  child: Column(
-                    children: <Widget>[
-                      ColorLoader3(),
-                      Text(
-                        'Loading Reports',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 18,
-                        ),
-                      )
-                    ],
-                  ),
-                )
+                  child: Text(
+                  'loading..',
+                ))
               : SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            OutlineButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              color: Colors.black87,
-                              hoverColor: Colors.orange[100],
-                              onPressed: () {},
-                              child: Text(
-                                'Today',
-                                style: TextStyle(
-                                  fontFamily: 'Open Sans',
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            OutlineButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              color: Colors.black87,
-                              hoverColor: Colors.orange[100],
-                              onPressed: () {},
-                              child: Text(
-                                'This Week',
-                                style: TextStyle(
-                                  fontFamily: 'Open Sans',
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                            OutlineButton(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              color: Colors.black87,
-                              hoverColor: Colors.orange[100],
-                              onPressed: () {},
-                              child: Text(
-                                'All Time',
-                                style: TextStyle(
-                                  fontFamily: 'Open Sans',
-                                  fontSize: 18,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Container(
+                      //   child: Row(
+                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      //     children: <Widget>[
+                      //       OutlineButton(
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12)),
+                      //         color: Colors.black87,
+                      //         hoverColor: Colors.orange[100],
+                      //         onPressed: () {},
+                      //         child: Text(
+                      //           'Today',
+                      //           style: TextStyle(
+                      //             fontFamily: 'Open Sans',
+                      //             fontSize: 18,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       OutlineButton(
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12)),
+                      //         color: Colors.black87,
+                      //         hoverColor: Colors.orange[100],
+                      //         onPressed: () {},
+                      //         child: Text(
+                      //           'This Week',
+                      //           style: TextStyle(
+                      //             fontFamily: 'Open Sans',
+                      //             fontSize: 18,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       OutlineButton(
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(12)),
+                      //         color: Colors.black87,
+                      //         hoverColor: Colors.orange[100],
+                      //         onPressed: () {},
+                      //         child: Text(
+                      //           'All Time',
+                      //           style: TextStyle(
+                      //             fontFamily: 'Open Sans',
+                      //             fontSize: 18,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                       SizedBox(
                         height: 20,
                       ),

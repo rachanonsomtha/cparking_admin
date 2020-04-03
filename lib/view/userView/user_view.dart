@@ -27,7 +27,6 @@ class _UserViewState extends State<UserView> {
       child: FutureBuilder(
         future: Provider.of<UserProvider>(context).getUsers(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          print(snapshot.data);
           if (snapshot.hasError) {
             return Container(
               child: Center(
@@ -128,7 +127,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
           .map(
             (report) => DataRow(
               onSelectChanged: (b) {
-                // print(report.id);
                 _navigationService.navigateToWithData(ReportDetail, report.id);
                 //navigate to report detail screen
               },

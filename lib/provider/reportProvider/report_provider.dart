@@ -48,7 +48,8 @@ class ReportsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Report findById(String id) {
+  Future<Report> findById(String id) async {
+    await fetchReport();
     return _reports.firstWhere((rep) => rep.id == id);
   }
 
