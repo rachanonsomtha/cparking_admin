@@ -24,8 +24,8 @@ class _UserViewState extends State<UserView> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: StreamBuilder(
-        stream: Provider.of<UserProvider>(context).getUsers().asStream(),
+      child: FutureBuilder(
+        future: Provider.of<UserProvider>(context).getUsers(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           print(snapshot.data);
           if (snapshot.hasError) {
@@ -194,16 +194,54 @@ class _UserDetailPageState extends State<UserDetailPage> {
             "Score: ${user.score.toString()}",
             style: TextStyle(fontSize: 20),
           ),
-          StreamBuilder(
-            stream: Provider.of<UserProvider>(context)
-                .getReportsFromUserId(user.reports)
-                .asStream(),
-            builder: (ctx, snapshot) {
-              print(snapshot.data);
-              if (snapshot.hasData && !snapshot.error) {
-                dataBody(snapshot.data);
-              }
-            },
+          SingleChildScrollView(
+            child: StreamBuilder(
+              stream: Provider.of<UserProvider>(context)
+                  .getReportsFromUserId(user.reports)
+                  .catchError((error) {
+                print(error);
+              }).asStream(),
+              builder: (ctx, snapshot) {
+                print(snapshot.data);
+                if (snapshot.hasError) {
+                  return Container(
+                    child: Center(
+                      child: Text(
+                        "Error...",
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.data == null) {
+                  return Container(
+                    child: Center(
+                      child: Text(
+                        "Loading...",
+                      ),
+                    ),
+                  );
+                } else {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'User reports',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w100,
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: dataBody(
+                          snapshot.data,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
           )
         ],
       )),

@@ -12,28 +12,38 @@ class UserProvider extends ChangeNotifier {
     return users.length;
   }
 
+  List<UserData> getUsersData() {
+    return users;
+  }
+
   Future<List<UserData>> getUsers() async {
+    users = [];
     var data =
         await http.get("https://cparking-ecee0.firebaseio.com/users.json");
 
     var jsonData = json.decode(data.body) as Map<String, dynamic>;
-
+    UserData user;
     jsonData.forEach((key, value) {
-      // print(value['profile']);
       var decodeData = value['profile'] as Map<String, dynamic>;
       decodeData.forEach((key, value) {
-        UserData user = UserData(
+        user = UserData(
           id: key,
           email: value['email'],
           profileImageUrl: value['profileImageUrl'],
           userName: value['userName'],
           score: value['score'],
           verified: value['verified'],
+          reports: [],
         );
-        print(user);
-        users.add(user);
+      });
+      var decodeReportList = value['reportsId'] as Map<String, dynamic>;
+      decodeReportList.forEach((key, reportId) {
+        user.reports.add(
+          reportId.toString(),
+        );
       });
     });
+    users.add(user);
 
     return users;
   }
@@ -44,24 +54,23 @@ class UserProvider extends ChangeNotifier {
           await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
 
       final decodeData = json.decode(data.body) as Map<String, dynamic>;
-
       List<Report> reports = [];
       decodeData.forEach((reportId, reportData) {
-        // print(value['profile']);
         if ((userReportList.contains(reportId)))
-          reports.add(Report(
-            id: reportId,
-            userName: reportData['userName'],
-            imageUrl: reportData['imageUrl'],
-            lifeTime: reportData['lifeTime'],
-            score: reportData['score'],
-            dateTime: reportData['dateTime'].toString(),
-            availability: reportData['availability'],
-            loc: reportData['loc'],
-            imgName: reportData['imgName'],
-          ));
+          reports.add(
+            Report(
+              id: reportId,
+              userName: reportData['userName'],
+              imageUrl: reportData['imageUrl'],
+              lifeTime: reportData['lifeTime'],
+              score: reportData['score'],
+              dateTime: reportData['dateTime'].toString(),
+              availability: reportData['availability'],
+              loc: reportData['loc'],
+              imgName: reportData['imgName'],
+            ),
+          );
       });
-
       return reports;
     } catch (error) {
       throw (error);
