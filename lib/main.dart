@@ -4,6 +4,7 @@ import 'package:c_admin/view/home_view/home_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './provider/reportProvider/report_provider.dart';
+import './provider/parkingLot/parking_provider.dart';
 import './view/reportView/report_view.dart';
 import './view/userView/user_view.dart';
 
@@ -18,6 +19,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider.value(
+          value: ParkingLotProvider(),
+        ),
         ChangeNotifierProvider.value(
           value: ReportsProvider(null, null),
         ),

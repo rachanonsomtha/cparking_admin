@@ -17,6 +17,7 @@ class NavigationBar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 60,
                 fontWeight: FontWeight.w800,
+                color: const Color.fromRGBO(96, 105, 165, 1),
               ),
             ),
           ),

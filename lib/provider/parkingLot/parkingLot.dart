@@ -10,6 +10,7 @@ class ParkLot with ChangeNotifier {
   final double max;
   @required
   final String imageUrl;
+  List<double> mean;
   Color color;
 
   ParkLot({

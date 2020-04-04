@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import './parkingLot.dart';
-import 'package:firebase_storage/firebase_storage.dart'; // For File Upload To Firestore
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'dart:math';
 
 class ParkingLotProvider with ChangeNotifier {
   List<ParkLot> _parkingLots = [
@@ -26,6 +25,14 @@ class ParkingLotProvider with ChangeNotifier {
       color: Colors.grey,
     ),
     ParkLot(
+      id: 'FEILD1',
+      title: 'ลานจอดสนามฮ้อกกี้#1',
+      max: 19,
+      imageUrl:
+          'https://firebasestorage.googleapis.com/v0/b/cparking-ecee0.appspot.com/o/FEILD%231.jpg?alt=media&token=a6b92650-99a9-4db9-8c7c-3a361475a8a9',
+      color: Colors.grey,
+    ),
+    ParkLot(
       id: 'SUR1',
       title: 'ลานจอดอาจารย์โยธา#1',
       max: 10,
@@ -39,14 +46,6 @@ class ParkingLotProvider with ChangeNotifier {
       max: 12,
       imageUrl:
           'https://firebasestorage.googleapis.com/v0/b/cparking-ecee0.appspot.com/o/SUR%232.jpg?alt=media&token=bfa057bd-045d-4204-b31c-b79c9e6a4aa5',
-      color: Colors.grey,
-    ),
-    ParkLot(
-      id: 'FEILD1',
-      title: 'ลานจอดสนามฮ้อกกี้#1',
-      max: 19,
-      imageUrl:
-          'https://firebasestorage.googleapis.com/v0/b/cparking-ecee0.appspot.com/o/FEILD%231.jpg?alt=media&token=a6b92650-99a9-4db9-8c7c-3a361475a8a9',
       color: Colors.grey,
     ),
     ParkLot(
@@ -93,25 +92,44 @@ class ParkingLotProvider with ChangeNotifier {
     return min;
   }
 
-  Future<void> getColor() async {
-    String url;
-    final time = DateTime.now();
+  Future<List<List<double>>> getLotMeanByWeekday(int weekDay) async {
+    final url = 'https://cparking-ecee0.firebaseio.com/avai.json';
+    try {
+      final List<int> hour = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
 
-    int day = time.weekday;
-    int hour = time.hour;
-    int minute = setMinute(time.minute);
-    if (day >= 6) day = 5;
-    if (hour >= 18 || hour <= 6) hour = 17;
-    _parkingLots.forEach((lot) async {
-      url =
-          'https://cparking-ecee0.firebaseio.com/avai/${lot.id}/${day.toString()}/${hour.toString()}/${minute.toString()}.json';
-      print(url);
       final response = await http.get(url);
-      final decodeData = json.decode(response.body) as Map<String, dynamic>;
-      double _parkingMax = lot.max;
+      final decode = json.decode(response.body) as Map<String, dynamic>;
+      List<List<double>> meanList = [];
 
-      lot.color = setColor(int.parse(decodeData['mean']), _parkingMax);
-    });
+      decode.forEach((key, value) {
+        List<double> meanList2 = [];
+        print(key);
+        hour.forEach((hour) {
+          // print(value[weekDay][hour]);
+          List<int> meanList1 = [];
+
+          final val = value[weekDay][hour] as Map<String, dynamic>;
+          val.forEach((min, value) {
+            meanList1.add(int.parse(value['mean']));
+          });
+          var result = meanList1.reduce((a, b) => a + b) / meanList1.length;
+          meanList2.add(result.floorToDouble());
+        });
+        meanList.add(meanList2);
+        print(meanList2);
+
+        // print(value[weekDay]);
+
+        // hour.forEach((element) {
+        //   print(value[weekDay][element]);
+        // });
+        // final val = value[weekDay] as Map<String, dynamic>;
+      });
+      return meanList;
+    } catch (error) {
+      print(error);
+      throw (error);
+    }
   }
 
   Color setColor(int avai, double max) {
@@ -129,17 +147,6 @@ class ParkingLotProvider with ChangeNotifier {
     }
 
     return colorFactor;
-  }
-
-  Future<String> getLocImage(String title) async {
-    var imageFile;
-    StorageReference ref =
-        FirebaseStorage.instance.ref().child('parkingLot/$title.jpg');
-    StorageUploadTask uploadTask = ref.putFile(imageFile);
-
-    var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
-    String url = dowurl.toString();
-    return url;
   }
 
   ParkLot findById(String id) {
