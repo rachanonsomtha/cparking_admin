@@ -30,12 +30,6 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
-    super.didChangeDependencies();
-  }
-
   // calculate displayed lifetime bar for sorting
   double ratioCalculate(DateTime submitTime, Duration lifeTime) {
     DateTime expTime = submitTime.add(lifeTime);
@@ -96,7 +90,9 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
             (report) => DataRow(
               onSelectChanged: (b) {
                 // print(report.id);
-                _navigationService.navigateToWithData(ReportDetail, report.id);
+                _navigationService.navigateToWithReportData(
+                    ReportDetail, report);
+                // print(report.id);
                 //navigate to report detail screen
               },
               cells: [
@@ -131,8 +127,7 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   @override
   Widget build(BuildContext context) {
     final locId = ModalRoute.of(context).settings.arguments as String;
-    final report = Provider.of<ReportsProvider>(context);
-    var count = report.reportCount;
+    print(locId);
 
     return Scaffold(
         backgroundColor: Colors.indigo[50],

@@ -1,5 +1,6 @@
 import 'package:c_admin/provider/userProvider/user.dart';
 import 'package:flutter/material.dart';
+import '../provider/reportProvider/report.dart';
 
 class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -16,11 +17,16 @@ class NavigationService {
     return navigatorKey.currentState.pushNamed(routeName, arguments: id);
   }
 
-  Future<dynamic> navigateTo(String routeName,
-      {Map<String, String> queryParams}) {
-    if (queryParams != null) {
-      routeName = Uri(path: routeName, queryParameters: queryParams).toString();
-    }
+  Future<dynamic> navigateToWithReportData(String routeName, Report report) {
+    return navigatorKey.currentState.pushNamed(routeName, arguments: report);
+  }
+
+  Future<dynamic> navigateTo(
+    String routeName,
+  ) {
+    // if (queryParams != null) {
+    //   routeName = Uri(path: routeName, queryParameters: queryParams).toString();
+    // }
     return navigatorKey.currentState.pushNamed(routeName);
   }
 }

@@ -101,85 +101,61 @@ class _ReportDetailViewState extends State<ReportDetailView> {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final reportId = ModalRoute.of(context).settings.arguments as String;
+    final report = ModalRoute.of(context).settings.arguments as Report;
     return Scaffold(
       backgroundColor: Colors.indigo[50],
       body: SingleChildScrollView(
-          child: FutureBuilder(
-        future: Provider.of<ReportsProvider>(context).findById(reportId),
-        builder: (ctx, snapshot) {
-          if (snapshot.hasError) {
-            return Container(
-              child: Center(
-                child: Text(
-                  "Error...",
-                ),
-              ),
-            );
-          }
-          if (snapshot.data == null) {
-            return Container(
-              child: Center(
-                child: Text(
-                  "Loading...",
-                ),
-              ),
-            );
-          } else {
-            return Stack(
-              alignment: Alignment.topCenter,
+          child: Stack(
+        alignment: Alignment.topCenter,
+        children: <Widget>[
+          _buildReportPicture(report),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                _buildReportPicture(snapshot.data),
-                SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: screenSize.height / 2.5,
-                      ),
-                      _buildReportName(snapshot.data),
-                      _buildDetail(snapshot.data),
-                      _buildSeparator(screenSize),
-                      // RaisedButton(
-                      //   shape: RoundedRectangleBorder(
-                      //     borderRadius: BorderRadius.circular(30),
-                      //   ),
-                      //   color: Colors.redAccent,
-                      //   onPressed: () {
-                      //     Provider.of<ReportsProvider>(context)
-                      //         .deleteReport(report);
-                      //     Navigator.of(context).pop();
-                      //   },
-                      //   child: Container(
-                      //     height: 30,
-                      //     width: 200,
-                      //     child: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //       children: <Widget>[
-                      //         Icon(
-                      //           Icons.delete,
-                      //           color: Colors.white,
-                      //         ),
-                      //         Text(
-                      //           'Delete report',
-                      //           style: TextStyle(
-                      //             fontSize: 20,
-                      //             fontWeight: FontWeight.w800,
-                      //             color: Colors.white,
-                      //           ),
-                      //         )
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                )
+                SizedBox(
+                  height: screenSize.height / 2.5,
+                ),
+                _buildReportName(report),
+                _buildDetail(report),
+                _buildSeparator(screenSize),
+                // RaisedButton(
+                //   shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(30),
+                //   ),
+                //   color: Colors.redAccent,
+                //   onPressed: () {
+                //     Provider.of<ReportsProvider>(context)
+                //         .deleteReport(report);
+                //     Navigator.of(context).pop();
+                //   },
+                //   child: Container(
+                //     height: 30,
+                //     width: 200,
+                //     child: Row(
+                //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                //       children: <Widget>[
+                //         Icon(
+                //           Icons.delete,
+                //           color: Colors.white,
+                //         ),
+                //         Text(
+                //           'Delete report',
+                //           style: TextStyle(
+                //             fontSize: 20,
+                //             fontWeight: FontWeight.w800,
+                //             color: Colors.white,
+                //           ),
+                //         )
+                //       ],
+                //     ),
+                //   ),
+                // ),
               ],
-            );
-          }
-        },
+            ),
+          )
+        ],
       )),
     );
   }
