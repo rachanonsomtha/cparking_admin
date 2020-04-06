@@ -94,6 +94,96 @@ class ReportsProvider with ChangeNotifier {
     }
   }
 
+  Future<int> getAllReportsCountFromThisWeek() async {
+    var data =
+        await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
+    var jsonData = json.decode(data.body) as Map<String, dynamic>;
+    int count = 0;
+    final now = DateTime.now();
+    jsonData.forEach((key, value) {
+      if (DateTime.parse(value['dateTime'].toString())
+          .isAfter(DateTime(now.year, now.month, now.day - 7))) count += 1;
+    });
+    return count;
+  }
+
+  Future<int> getReportsCountFromToday() async {
+    var data =
+        await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
+    var jsonData = json.decode(data.body) as Map<String, dynamic>;
+    int count = 0;
+    final now = DateTime.now();
+    jsonData.forEach((key, value) {
+      if (DateTime.parse(value['dateTime'].toString())
+          .isAfter(DateTime(now.year, now.month, now.day))) count += 1;
+    });
+    return count;
+  }
+
+  Future<int> getAllReportsCount() async {
+    var data =
+        await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
+    var jsonData = json.decode(data.body) as Map;
+    return jsonData.length;
+  }
+
+  Future<List<Report>> getReportsFromUserLoc(String loc) async {
+    try {
+      var data =
+          await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
+
+      final decodeData = json.decode(data.body) as Map<String, dynamic>;
+      List<Report> reports = [];
+      decodeData.forEach((reportId, reportData) {
+        if (loc == reportData['loc'].toString())
+          reports.add(
+            Report(
+              id: reportId,
+              userName: reportData['userName'],
+              imageUrl: reportData['imageUrl'],
+              lifeTime: reportData['lifeTime'],
+              score: reportData['score'],
+              dateTime: reportData['dateTime'].toString(),
+              availability: reportData['availability'],
+              loc: reportData['loc'],
+              imgName: reportData['imgName'],
+            ),
+          );
+      });
+      return reports;
+    } catch (error) {
+      throw (error);
+    }
+  }
+
+  Future<List<Report>> getReportsAll() async {
+    try {
+      var data =
+          await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
+
+      final decodeData = json.decode(data.body) as Map<String, dynamic>;
+      List<Report> reports = [];
+      decodeData.forEach((reportId, reportData) {
+        reports.add(
+          Report(
+            id: reportId,
+            userName: reportData['userName'],
+            imageUrl: reportData['imageUrl'],
+            lifeTime: reportData['lifeTime'],
+            score: reportData['score'],
+            dateTime: reportData['dateTime'].toString(),
+            availability: reportData['availability'],
+            loc: reportData['loc'],
+            imgName: reportData['imgName'],
+          ),
+        );
+      });
+      return reports;
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   Future<void> fetchReport() async {
     final url = 'https://cparking-ecee0.firebaseio.com/reports.json';
 

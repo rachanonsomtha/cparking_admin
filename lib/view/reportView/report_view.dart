@@ -15,16 +15,9 @@ class ReportOverViewScreen extends StatefulWidget {
 }
 
 class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
-  bool _isInit = true;
-  bool _isLoading = false;
   List<Report> reports;
   List<DataRow> reportDataRowList;
   bool sort = true;
-  bool _dialVisible = true;
-
-  bool _today;
-  bool _week;
-  bool _all = true;
 
   int columnIndex;
   List<DataRow> forSortingreport;
@@ -39,38 +32,8 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
 
   @override
   void didChangeDependencies() {
-    if (_isInit) {
-      setState(() {
-        _isLoading = true;
-      });
-      Provider.of<ReportsProvider>(context).fetchReport().whenComplete(() {
-        reports = Provider.of<ReportsProvider>(context).reports;
-        // print(reportDataRowList);
-      }).then((_) {
-        setState(() {
-          _isLoading = false;
-        });
-      });
-    }
-    setState(() {
-      _isInit = false;
-    });
-
     // TODO: implement didChangeDependencies
     super.didChangeDependencies();
-  }
-
-  Future<void> _fetchReport(BuildContext context, String name) async {
-    setState(() {
-      _isLoading = true;
-    });
-    Provider.of<ReportsProvider>(context).fetchReport().then((_) {
-      reports = Provider.of<ReportsProvider>(context).reports;
-    }).then((_) {
-      setState(() {
-        _isLoading = false;
-      });
-    });
   }
 
   // calculate displayed lifetime bar for sorting
@@ -99,7 +62,7 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
     }
   }
 
-  DataTable dataBody() {
+  DataTable dataBody(List<Report> reports) {
     return DataTable(
       sortColumnIndex: 1,
       sortAscending: sort,
@@ -167,96 +130,62 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locId = ModalRoute.of(context).settings.arguments as String;
     final report = Provider.of<ReportsProvider>(context);
     var count = report.reportCount;
 
     return Scaffold(
-      backgroundColor: Colors.indigo[50],
-      // drawer: AppDrawer(),
-      body: count == 0 && !_isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'There\'s no report now',
-                    style: TextStyle(
-                      fontStyle: FontStyle.italic,
-                      color: Theme.of(context).accentColor,
-                      fontSize: 25,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : _isLoading
-              ? Center(
+        backgroundColor: Colors.indigo[50],
+        // drawer: AppDrawer(),
+        body: FutureBuilder(
+          future: locId != null
+              ? Provider.of<ReportsProvider>(context)
+                  .getReportsFromUserLoc(locId)
+              : Provider.of<ReportsProvider>(context).getReportsAll(),
+          builder: (ctx, snapshot) {
+            if (snapshot.hasError) {
+              return Container(
+                child: Center(
                   child: Text(
-                  'loading..',
-                ))
-              : SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      // Container(
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      //     children: <Widget>[
-                      //       OutlineButton(
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(12)),
-                      //         color: Colors.black87,
-                      //         hoverColor: Colors.orange[100],
-                      //         onPressed: () {},
-                      //         child: Text(
-                      //           'Today',
-                      //           style: TextStyle(
-                      //             fontFamily: 'Open Sans',
-                      //             fontSize: 18,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       OutlineButton(
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(12)),
-                      //         color: Colors.black87,
-                      //         hoverColor: Colors.orange[100],
-                      //         onPressed: () {},
-                      //         child: Text(
-                      //           'This Week',
-                      //           style: TextStyle(
-                      //             fontFamily: 'Open Sans',
-                      //             fontSize: 18,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       OutlineButton(
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(12)),
-                      //         color: Colors.black87,
-                      //         hoverColor: Colors.orange[100],
-                      //         onPressed: () {},
-                      //         child: Text(
-                      //           'All Time',
-                      //           style: TextStyle(
-                      //             fontFamily: 'Open Sans',
-                      //             fontSize: 18,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        child: dataBody(),
-                      ),
-                    ],
+                    "Error...",
                   ),
                 ),
-    );
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    "Loading...",
+                  ),
+                ),
+              );
+            }
+            if (snapshot.data == null) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    "No data now...",
+                  ),
+                ),
+              );
+            } else {
+              return SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      child: dataBody(snapshot.data),
+                    ),
+                  ],
+                ),
+              );
+            }
+          },
+        ));
   }
 }
 

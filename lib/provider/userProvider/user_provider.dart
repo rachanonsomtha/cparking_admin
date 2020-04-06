@@ -16,6 +16,13 @@ class UserProvider extends ChangeNotifier {
     return users;
   }
 
+  Future<int> getUserCount() async {
+    var data =
+        await http.get("https://cparking-ecee0.firebaseio.com/users.json");
+    var jsonData = json.decode(data.body) as Map;
+    return jsonData.length;
+  }
+
   Future<List<UserData>> getUsers() async {
     users = [];
     var data =
@@ -25,25 +32,28 @@ class UserProvider extends ChangeNotifier {
     UserData user;
     jsonData.forEach((key, value) {
       var decodeData = value['profile'] as Map<String, dynamic>;
-      decodeData.forEach((key, value) {
-        user = UserData(
-          id: key,
-          email: value['email'],
-          profileImageUrl: value['profileImageUrl'],
-          userName: value['userName'],
-          score: value['score'],
-          verified: value['verified'],
-          reports: [],
-        );
-      });
+      if (decodeData != null)
+        decodeData.forEach((key, data) {
+          print(data['email']);
+          user = UserData(
+            id: key,
+            email: data['email'],
+            profileImageUrl: data['profileImageUrl'],
+            userName: data['userName'],
+            score: data['score'],
+            verified: data['verified'],
+            reports: [],
+          );
+        });
       var decodeReportList = value['reportsId'] as Map<String, dynamic>;
-      decodeReportList.forEach((key, reportId) {
-        user.reports.add(
-          reportId.toString(),
-        );
-      });
+      if (decodeReportList != null)
+        decodeReportList.forEach((key, reportId) {
+          user.reports.add(
+            reportId.toString(),
+          );
+        });
+      users.add(user);
     });
-    users.add(user);
 
     return users;
   }
@@ -54,6 +64,7 @@ class UserProvider extends ChangeNotifier {
           await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
 
       final decodeData = json.decode(data.body) as Map<String, dynamic>;
+      if (decodeData == null) return null;
       List<Report> reports = [];
       decodeData.forEach((reportId, reportData) {
         if ((userReportList.contains(reportId)))

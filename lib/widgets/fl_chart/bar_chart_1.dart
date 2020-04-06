@@ -1,8 +1,12 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:c_admin/routing/route_names.dart';
+import 'package:c_admin/view/reportView/report_view.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../../provider/parkingLot/parkingLot.dart';
+import '../../locator.dart';
+import '../../Navigation/navigation.dart';
 
 class BarChartSample1 extends StatefulWidget {
   final List<double> meanList;
@@ -89,16 +93,15 @@ class BarChartSample1State extends State<BarChartSample1> {
                 alignment: Alignment.topRight,
                 child: IconButton(
                   icon: Icon(
-                    isPlaying ? Icons.pause : Icons.report,
+                    Icons.timeline,
                     color: const Color(0xff0f4a3c),
                   ),
                   onPressed: () {
-                    setState(() {
-                      isPlaying = !isPlaying;
-                      if (isPlaying) {
-                        refreshState();
-                      }
-                    });
+                    print(widget.parkingLotDetail.id);
+                    locator<NavigationService>().navigateToWithData(
+                      ReportRoute,
+                      widget.parkingLotDetail.id,
+                    );
                   },
                 ),
               ),

@@ -103,7 +103,6 @@ class ParkingLotProvider with ChangeNotifier {
 
       decode.forEach((key, value) {
         List<double> meanList2 = [];
-        print(key);
         hour.forEach((hour) {
           // print(value[weekDay][hour]);
           List<int> meanList1 = [];
@@ -116,7 +115,6 @@ class ParkingLotProvider with ChangeNotifier {
           meanList2.add(result.floorToDouble());
         });
         meanList.add(meanList2);
-        print(meanList2);
 
         // print(value[weekDay]);
 

@@ -25,7 +25,10 @@ class _UserViewState extends State<UserView> {
   Widget build(BuildContext context) {
     return Container(
       child: FutureBuilder(
-        future: Provider.of<UserProvider>(context).getUsers(),
+        future:
+            Provider.of<UserProvider>(context).getUsers().catchError((error) {
+          print(error);
+        }),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasError) {
             return Container(
@@ -56,6 +59,9 @@ class _UserViewState extends State<UserView> {
                   ),
                   title: Text(snapshot.data[index].userName),
                   subtitle: Text(snapshot.data[index].email),
+                  trailing: Text(
+                    "Total reports: ${snapshot.data[index].reports.length.toString()}",
+                  ),
                   onTap: () {
                     _navigationService.navigateToWithUserData(
                         UserDetail, snapshot.data[index]);
@@ -210,7 +216,8 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ),
                   );
                 }
-                if (snapshot.data == null) {
+                if (snapshot.data == null ||
+                    snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     child: Center(
                       child: Text(

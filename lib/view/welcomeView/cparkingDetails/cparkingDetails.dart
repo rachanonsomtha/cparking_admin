@@ -1,8 +1,11 @@
 import 'package:c_admin/provider/parkingLot/parking_provider.dart';
+import 'package:c_admin/provider/reportProvider/report_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:bezier_chart/bezier_chart.dart';
 import 'package:provider/provider.dart';
 import '../../../widgets/fl_chart/bar_chart_1.dart';
+import '../../../widgets/fl_chart/pie_chart.dart';
+import '../../../widgets/cards/card_tile.dart';
+import '../../../provider/userProvider/user_provider.dart';
 
 class CparkingDetails extends StatefulWidget {
   @override
@@ -36,6 +39,28 @@ class _CparkingDetailsState extends State<CparkingDetails> {
     return weekDay;
   }
 
+  Color weekDayColor(double val) {
+    Color color;
+    switch (val.toInt()) {
+      case 1:
+        color = Colors.yellow[300];
+        break;
+      case 2:
+        color = Colors.pink;
+        break;
+      case 3:
+        color = Colors.green;
+        break;
+      case 4:
+        color = Colors.orange;
+        break;
+      case 5:
+        color = Colors.blue;
+        break;
+    }
+    return color;
+  }
+
   @override
   Widget build(BuildContext context) {
     final parkingLotPvd = Provider.of<ParkingLotProvider>(context);
@@ -52,7 +77,7 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w200,
-                        color: const Color.fromRGBO(171, 176, 207, 1),
+                        color: Colors.black87,
                       ),
                     ),
                     Text(
@@ -60,7 +85,7 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
-                        color: const Color.fromRGBO(96, 105, 165, 1),
+                        color: weekDayColor(_value),
                       ),
                     )
                   ],
@@ -74,8 +99,8 @@ class _CparkingDetailsState extends State<CparkingDetails> {
               width: MediaQuery.of(context).size.width / 2,
               child: SliderTheme(
                 data: SliderTheme.of(context).copyWith(
-                  activeTrackColor: const Color.fromRGBO(109, 120, 136, 1),
-                  inactiveTrackColor: const Color.fromRGBO(109, 120, 136, 1),
+                  activeTrackColor: const Color.fromRGBO(109, 120, 136, 0.6),
+                  inactiveTrackColor: const Color.fromRGBO(109, 120, 136, 0.6),
                   trackShape: RectangularSliderTrackShape(),
                   trackHeight: 4.0,
                   thumbColor: Colors.indigo,
@@ -87,22 +112,165 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                   min: 1,
                   max: 5,
                   value: _value,
-                  onChangeEnd: (_) {
+                  onChangeEnd: (_) async {
                     setState(() {
                       showWeekday = true;
                     });
+                    _meanList = await Provider.of<ParkingLotProvider>(context)
+                        .getLotMeanByWeekday(_value.toInt());
                   },
+
                   onChanged: (value) {
-                    setState(() async {
+                    setState(() {
                       showWeekday = false;
                       _value = value;
-                      _meanList = await Provider.of<ParkingLotProvider>(context)
-                          .getLotMeanByWeekday(_value.toInt());
                     });
                   },
                   divisions: 4,
                   // label: weekDay(_value).toString(),
                 ),
+              ),
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IntrinsicHeight(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  FutureBuilder(
+                    future: Provider.of<UserProvider>(context).getUserCount(),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.hasError) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Error...",
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Loading...",
+                            ),
+                          ),
+                        );
+                      } else {
+                        return CardTile(
+                          iconBgColor: Colors.blueGrey,
+                          cardTitle: 'Total users',
+                          icon: Icons.person_outline,
+                          subText: 'Total users',
+                          mainText: snapshot.data.toString(),
+                        );
+                      }
+                    },
+                  ),
+                  SizedBox(width: 20),
+                  FutureBuilder(
+                    future: Provider.of<ReportsProvider>(context)
+                        .getAllReportsCount(),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.hasError) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Error...",
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Loading...",
+                            ),
+                          ),
+                        );
+                      } else {
+                        return CardTile(
+                          iconBgColor: Colors.blueGrey,
+                          cardTitle: 'Total reports',
+                          icon: Icons.select_all,
+                          subText: 'All reports',
+                          mainText: snapshot.data.toString(),
+                        );
+                      }
+                    },
+                  ),
+                  SizedBox(width: 20),
+                  FutureBuilder(
+                    future: Provider.of<ReportsProvider>(context)
+                        .getReportsCountFromToday(),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.hasError) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Error...",
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Loading...",
+                            ),
+                          ),
+                        );
+                      } else {
+                        return CardTile(
+                          iconBgColor: weekDayColor(_value),
+                          cardTitle: 'Rep from today',
+                          icon: Icons.today,
+                          subText: 'Reports from ${weekDay(_value)}',
+                          mainText: snapshot.data.toString(),
+                        );
+                      }
+                    },
+                  ),
+                  SizedBox(width: 20),
+                  FutureBuilder(
+                    future: Provider.of<ReportsProvider>(context)
+                        .getAllReportsCountFromThisWeek(),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.hasError) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Error...",
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          child: Center(
+                            child: Text(
+                              "Loading...",
+                            ),
+                          ),
+                        );
+                      } else {
+                        return CardTile(
+                          iconBgColor: Colors.blueGrey,
+                          cardTitle: 'Rep from week',
+                          icon: Icons.today,
+                          subText: 'Reports from this week',
+                          mainText: snapshot.data.toString(),
+                        );
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
           ),
@@ -114,7 +282,6 @@ class _CparkingDetailsState extends State<CparkingDetails> {
               crossAxisCount: 4,
               // Generate 100 widgets that display their index in the List.
               children: List.generate(7, (index) {
-                print(index);
                 return Padding(
                   padding: const EdgeInsets.all(10),
                   child: Center(
@@ -154,6 +321,8 @@ class _CparkingDetailsState extends State<CparkingDetails> {
               }),
             ),
           ),
+
+          // PieChartSample2(),
         ],
       ),
     );
@@ -184,40 +353,5 @@ class _CparkingDetailsState extends State<CparkingDetails> {
     //     )
     //   ],
     // ),
-  }
-
-  Widget sample1(BuildContext context) {
-    return Center(
-      child: Container(
-        color: Colors.black,
-        height: MediaQuery.of(context).size.height / 4,
-        width: MediaQuery.of(context).size.width * 0.20,
-        child: BezierChart(
-          bezierChartScale: BezierChartScale.CUSTOM,
-          xAxisCustomValues: const [0, 5, 10, 15, 20, 25, 30, 35],
-          series: const [
-            BezierLine(
-              data: const [
-                DataPoint<double>(value: 10, xAxis: 0),
-                DataPoint<double>(value: 130, xAxis: 5),
-                DataPoint<double>(value: 50, xAxis: 10),
-                DataPoint<double>(value: 150, xAxis: 15),
-                DataPoint<double>(value: 75, xAxis: 20),
-                DataPoint<double>(value: 0, xAxis: 25),
-                DataPoint<double>(value: 5, xAxis: 30),
-                DataPoint<double>(value: 45, xAxis: 35),
-              ],
-            ),
-          ],
-          config: BezierChartConfig(
-            verticalIndicatorStrokeWidth: 3.0,
-            verticalIndicatorColor: Colors.black26,
-            showVerticalIndicator: true,
-            backgroundColor: Colors.black,
-            snap: false,
-          ),
-        ),
-      ),
-    );
   }
 }
