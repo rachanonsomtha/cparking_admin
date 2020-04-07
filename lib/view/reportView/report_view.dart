@@ -1,3 +1,4 @@
+import 'package:c_admin/provider/userProvider/user_provider.dart';
 import 'package:provider/provider.dart';
 import '../../provider/reportProvider/report_provider.dart';
 import '../../provider/reportProvider/report.dart';
@@ -45,7 +46,7 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   }
 
   onSortColumn(int col, bool ascending) {
-    if (col == 1) {
+    if (col == 3) {
       if (ascending) {
         reports.sort((a, b) =>
             DateTime.parse(a.dateTime).compareTo(DateTime.parse(b.dateTime)));
@@ -54,25 +55,34 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
             DateTime.parse(b.dateTime).compareTo(DateTime.parse(a.dateTime)));
       }
     }
+
+    if (col == 6) {
+      if (ascending) {
+        reports.sort((a, b) => a.availability.compareTo(b.availability));
+      } else {
+        reports.sort((a, b) => b.availability.compareTo(a.availability));
+      }
+    }
   }
 
   DataTable dataBody(List<Report> reports) {
     return DataTable(
-      sortColumnIndex: 1,
+      showCheckboxColumn: false,
+      columnSpacing: 60,
       sortAscending: sort,
-      // showCheckboxColumn: true,
+      sortColumnIndex: 6,
       columns: [
+        DataColumn(
+          label: Text('Rep.pic'),
+        ),
         DataColumn(
           label: Text('Rep.id'),
         ),
         DataColumn(
+          label: Text('Owned by'),
+        ),
+        DataColumn(
           label: Text('Date'),
-          onSort: (columnIndex, ascending) {
-            setState(() {
-              sort = !sort;
-            });
-            onSortColumn(columnIndex, ascending);
-          },
         ),
         DataColumn(
           label: Text('Time'),
@@ -81,6 +91,12 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
           label: Text('Location'),
         ),
         DataColumn(
+          onSort: (columnIndex, ascending) {
+            setState(() {
+              sort = !sort;
+            });
+            onSortColumn(columnIndex, ascending);
+          },
           numeric: true,
           label: Text('Availability'),
         )
@@ -97,8 +113,16 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
               },
               cells: [
                 DataCell(
-                  Text(report.id.toString()),
+                  Image.network(
+                    report.imageUrl,
+                  ), // Text(report.id.toString()),
                 ),
+                DataCell(
+                  Text(report.id.toString()), // Text(report.id.toString()),
+                ),
+                DataCell(Text(
+                  report.userName,
+                )),
                 DataCell(
                   Text(
                       '${DateTime.parse(report.dateTime).day}/${DateTime.parse(report.dateTime).month}/${DateTime.parse(report.dateTime).year}'),
@@ -134,9 +158,10 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
         // drawer: AppDrawer(),
         body: FutureBuilder(
           future: locId != null
-              ? Provider.of<ReportsProvider>(context)
+              ? Provider.of<ReportsProvider>(context, listen: false)
                   .getReportsFromUserLoc(locId)
-              : Provider.of<ReportsProvider>(context).getReportsAll(),
+              : Provider.of<ReportsProvider>(context, listen: false)
+                  .getReportsAll(),
           builder: (ctx, snapshot) {
             if (snapshot.hasError) {
               return Container(

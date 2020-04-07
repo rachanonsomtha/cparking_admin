@@ -102,10 +102,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
 
   DataTable dataBody(List<Report> reports) {
     return DataTable(
-      sortColumnIndex: 1,
-      sortAscending: sort,
-      // showCheckboxColumn: true,
+      showCheckboxColumn: false,
       columns: [
+        DataColumn(
+          label: Text('Rep.pic'),
+        ),
         DataColumn(
           label: Text('Rep.id'),
         ),
@@ -137,6 +138,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                 //navigate to report detail screen
               },
               cells: [
+                DataCell(
+                  Image.network(
+                    report.imageUrl,
+                  ), // Text(report.id.toString()),
+                ),
                 DataCell(
                   Text(report.id.toString()),
                 ),

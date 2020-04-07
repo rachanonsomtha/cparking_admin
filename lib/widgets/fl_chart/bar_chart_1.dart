@@ -42,7 +42,7 @@ class BarChartSample1State extends State<BarChartSample1> {
         shadowColor: Colors.blueAccent,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        color: const Color(0x495081),
+        color: Colors.white70,
         child: Stack(
           children: <Widget>[
             Padding(
@@ -116,7 +116,7 @@ class BarChartSample1State extends State<BarChartSample1> {
     int x,
     double y, {
     bool isTouched = false,
-    Color barColor = Colors.white,
+    Color barColor = Colors.amber,
     double width = 8,
     List<int> showTooltips = const [],
   }) {
@@ -222,7 +222,7 @@ class BarChartSample1State extends State<BarChartSample1> {
                   break;
               }
               return BarTooltipItem(weekDay + '\n' + (rod.y - 1).toString(),
-                  TextStyle(color: Colors.yellow));
+                  TextStyle(color: Colors.amberAccent));
             }),
         touchCallback: (barTouchResponse) {
           setState(() {

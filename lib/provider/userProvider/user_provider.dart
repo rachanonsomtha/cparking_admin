@@ -23,6 +23,14 @@ class UserProvider extends ChangeNotifier {
     return jsonData.length;
   }
 
+  Future<String> getUsername(String id) async {
+    try {
+      return 'eiei';
+    } catch (error) {
+      throw (error);
+    }
+  }
+
   Future<List<UserData>> getUsers() async {
     users = [];
     var data =
@@ -34,7 +42,6 @@ class UserProvider extends ChangeNotifier {
       var decodeData = value['profile'] as Map<String, dynamic>;
       if (decodeData != null)
         decodeData.forEach((key, data) {
-          print(data['email']);
           user = UserData(
             id: key,
             email: data['email'],

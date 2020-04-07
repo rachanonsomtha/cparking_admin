@@ -32,7 +32,7 @@ class CardTile extends StatelessWidget {
               elevation: 4,
               color: Colors.white,
               shadowColor: Colors.blueAccent,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(18),
               child: Container(
                 height: _media.height / 6.5,
                 width: _media.width / 7,

@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../../provider/reportProvider/report_provider.dart';
 import '../../../provider/reportProvider/report.dart';
 
 class ReportDetailView extends StatefulWidget {
@@ -9,7 +7,6 @@ class ReportDetailView extends StatefulWidget {
 }
 
 class _ReportDetailViewState extends State<ReportDetailView> {
-  bool _isLoading = false;
   Widget _buildReportPicture(Report report) {
     return Container(
       height: MediaQuery.of(context).size.height / 2.5,
@@ -102,61 +99,10 @@ class _ReportDetailViewState extends State<ReportDetailView> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final report = ModalRoute.of(context).settings.arguments as Report;
-    return Scaffold(
-      backgroundColor: Colors.indigo[50],
-      body: SingleChildScrollView(
-          child: Stack(
-        alignment: Alignment.topCenter,
-        children: <Widget>[
-          _buildReportPicture(report),
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: screenSize.height / 2.5,
-                ),
-                _buildReportName(report),
-                _buildDetail(report),
-                _buildSeparator(screenSize),
-                // RaisedButton(
-                //   shape: RoundedRectangleBorder(
-                //     borderRadius: BorderRadius.circular(30),
-                //   ),
-                //   color: Colors.redAccent,
-                //   onPressed: () {
-                //     Provider.of<ReportsProvider>(context)
-                //         .deleteReport(report);
-                //     Navigator.of(context).pop();
-                //   },
-                //   child: Container(
-                //     height: 30,
-                //     width: 200,
-                //     child: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                //       children: <Widget>[
-                //         Icon(
-                //           Icons.delete,
-                //           color: Colors.white,
-                //         ),
-                //         Text(
-                //           'Delete report',
-                //           style: TextStyle(
-                //             fontSize: 20,
-                //             fontWeight: FontWeight.w800,
-                //             color: Colors.white,
-                //           ),
-                //         )
-                //       ],
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
-          )
-        ],
-      )),
+    return Container(
+      child: Center(
+        child: Text(report.id),
+      ),
     );
   }
 }
