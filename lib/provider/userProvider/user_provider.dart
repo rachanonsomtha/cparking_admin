@@ -23,14 +23,6 @@ class UserProvider extends ChangeNotifier {
     return jsonData.length;
   }
 
-  Future<String> getUsername(String id) async {
-    try {
-      return 'eiei';
-    } catch (error) {
-      throw (error);
-    }
-  }
-
   Future<List<UserData>> getUsers() async {
     users = [];
     var data =
