@@ -23,55 +23,87 @@ class _UserViewState extends State<UserView> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
-        future:
-            Provider.of<UserProvider>(context).getUsers().catchError((error) {
-          print(error);
-        }),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasError) {
-            return Container(
-              child: Center(
-                child: Text(
-                  "Error...",
-                ),
-              ),
-            );
-          }
-          if (snapshot.data == null) {
-            return Container(
-              child: Center(
-                child: Text(
-                  "Loading...",
-                ),
-              ),
-            );
-          } else {
-            return ListView.builder(
-              padding: EdgeInsets.all(10),
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(snapshot.data[index].profileImageUrl),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'All users',
+          style: TextStyle(
+            color: Colors.black87,
+            fontSize: 36,
+            fontWeight: FontWeight.w100,
+          ),
+        ),
+        FutureBuilder(
+          future:
+              Provider.of<UserProvider>(context).getUsers().catchError((error) {
+            print(error);
+          }),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    "Error...",
                   ),
-                  title: Text(snapshot.data[index].userName),
-                  subtitle: Text(snapshot.data[index].email),
-                  trailing: Text(
-                    "Total reports: ${snapshot.data[index].reports.length.toString()}",
+                ),
+              );
+            }
+            if (snapshot.data == null) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    "No user now...",
                   ),
-                  onTap: () {
-                    _navigationService.navigateToWithUserData(
-                        UserDetail, snapshot.data[index]);
+                ),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    "Loading...",
+                  ),
+                ),
+              );
+            } else {
+              return Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.all(10),
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            NetworkImage(snapshot.data[index].profileImageUrl),
+                      ),
+                      title: Text(snapshot.data[index].userName),
+                      subtitle: Text(snapshot.data[index].email),
+                      trailing: Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              "Total reports: ${snapshot.data[index].reports.length.toString()}",
+                            ),
+                            Text(
+                              "Score: ${snapshot.data[index].score.toString()}",
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        _navigationService.navigateToWithUserData(
+                            UserDetail, snapshot.data[index]);
+                      },
+                    );
                   },
-                );
-              },
-            );
-          }
-        },
-      ),
+                ),
+              );
+            }
+          },
+        )
+      ],
     );
   }
 }
@@ -130,12 +162,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
           label: Text('Availability'),
         )
       ],
-      rows: reports
+      rows: reports.reversed
           .map(
             (report) => DataRow(
               onSelectChanged: (b) {
-                _navigationService.navigateToWithData(ReportDetail, report.id);
-                //navigate to report detail screen
+                _navigationService.navigateToWithReportData(
+                    ReportDetail, report); //navigate to report detail screen
               },
               cells: [
                 DataCell(
@@ -176,13 +208,12 @@ class _UserDetailPageState extends State<UserDetailPage> {
     final user = ModalRoute.of(context).settings.arguments as UserData;
 
     return Container(
-      child: Center(
-          child: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             CircleAvatar(
               backgroundImage: NetworkImage(user.profileImageUrl),
-              maxRadius: 100,
+              maxRadius: 60,
             ),
             SizedBox(
               height: 20,
@@ -222,12 +253,20 @@ class _UserDetailPageState extends State<UserDetailPage> {
                     ),
                   );
                 }
-                if (snapshot.data == null ||
-                    snapshot.connectionState == ConnectionState.waiting) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
                   return Container(
                     child: Center(
                       child: Text(
                         "Loading...",
+                      ),
+                    ),
+                  );
+                }
+                if (snapshot.data == null) {
+                  return Container(
+                    child: Center(
+                      child: Text(
+                        "There's no report from this user now...",
                       ),
                     ),
                   );
@@ -255,7 +294,7 @@ class _UserDetailPageState extends State<UserDetailPage> {
             )
           ],
         ),
-      )),
+      ),
     );
   }
 }

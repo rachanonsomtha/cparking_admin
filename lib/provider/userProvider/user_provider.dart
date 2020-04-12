@@ -20,7 +20,55 @@ class UserProvider extends ChangeNotifier {
     var data =
         await http.get("https://cparking-ecee0.firebaseio.com/users.json");
     var jsonData = json.decode(data.body) as Map;
+    if (jsonData == null) return 0;
     return jsonData.length;
+  }
+
+  Future<UserData> getUserDataFromReportId(String ownerId) async {
+    UserData temp;
+    String url = "https://cparking-ecee0.firebaseio.com/users/$ownerId.json";
+    var data = await http.get(url);
+
+    var jsonData = json.decode(data.body) as Map<String, dynamic>;
+    var temp2 = jsonData['profile'] as Map<String, dynamic>;
+    temp2.forEach((key, value) {
+      temp = UserData(
+        id: ownerId,
+        email: value['email'],
+        profileImageUrl: value['profileImageUrl'],
+        userName: value['userName'],
+        score: value['score'],
+        verified: value['verified'],
+        reports: [],
+      );
+    });
+
+    var decodeReportList = jsonData['reportsId'] as Map<String, dynamic>;
+    if (decodeReportList != null)
+      decodeReportList.forEach((key, reportId) {
+        temp.reports.add(
+          reportId.toString(),
+        );
+      });
+
+    // temp = UserData(
+    //   id: ownerId,
+    //   email: jsonData['email'],
+    //   profileImageUrl: jsonData['profileImageUrl'],
+    //   userName: jsonData['userName'],
+    //   score: jsonData['score'],
+    //   verified: jsonData['verified'],
+    //   reports: [],
+    // );
+    // var decodeReportList = jsonData['reportsId'] as Map<String, dynamic>;
+    // if (decodeReportList != null)
+    //   decodeReportList.forEach((key, reportId) {
+    //     temp.reports.add(
+    //       reportId.toString(),
+    //     );
+    //   });
+    // print(temp);
+    return temp;
   }
 
   Future<List<UserData>> getUsers() async {
@@ -29,6 +77,7 @@ class UserProvider extends ChangeNotifier {
         await http.get("https://cparking-ecee0.firebaseio.com/users.json");
 
     var jsonData = json.decode(data.body) as Map<String, dynamic>;
+    if (jsonData == null) return null;
     UserData user;
     jsonData.forEach((key, value) {
       var decodeData = value['profile'] as Map<String, dynamic>;

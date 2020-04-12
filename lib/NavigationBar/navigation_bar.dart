@@ -25,7 +25,7 @@ class NavigationBar extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               NavBarItem(
-                'Home',
+                'Dashboard',
                 HomeRoute,
               ),
               SizedBox(

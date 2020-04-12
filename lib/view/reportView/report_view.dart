@@ -69,8 +69,6 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
     return DataTable(
       showCheckboxColumn: false,
       columnSpacing: 60,
-      sortAscending: sort,
-      sortColumnIndex: 6,
       columns: [
         DataColumn(
           label: Text('Rep.pic'),
@@ -91,17 +89,17 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
           label: Text('Location'),
         ),
         DataColumn(
-          onSort: (columnIndex, ascending) {
-            setState(() {
-              sort = !sort;
-            });
-            onSortColumn(columnIndex, ascending);
-          },
+          // onSort: (columnIndex, ascending) {
+          //   setState(() {
+          //     sort = !sort;
+          //   });
+          //   onSortColumn(columnIndex, ascending);
+          // },
           numeric: true,
           label: Text('Availability'),
         )
       ],
-      rows: reports
+      rows: reports.reversed
           .map(
             (report) => DataRow(
               onSelectChanged: (b) {
@@ -113,16 +111,61 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
               },
               cells: [
                 DataCell(
-                  Image.network(
-                    report.imageUrl,
-                  ), // Text(report.id.toString()),
+                  Container(
+                    height: 50,
+                    child: Image.network(
+                      report.imageUrl,
+                    ),
+                  ),
+                  // Text(report.id.toString()),
                 ),
                 DataCell(
                   Text(report.id.toString()), // Text(report.id.toString()),
                 ),
-                DataCell(Text(
-                  report.userName,
-                )),
+                DataCell(
+                  FutureBuilder(
+                    future: Provider.of<UserProvider>(context)
+                        .getUserDataFromReportId(report.userName),
+                    builder: (ctx, snapshot) {
+                      if (snapshot.hasError) {
+                        return Container(
+                          width: 100,
+                          child: Center(
+                            child: Text(
+                              "Error...",
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Container(
+                          width: 100,
+                          child: Center(
+                            child: Text(
+                              "Loading...",
+                            ),
+                          ),
+                        );
+                      }
+                      if (snapshot.data == null) {
+                        return Container(
+                          width: 100,
+                          child: Center(
+                            child: Text(
+                              "No data now...",
+                            ),
+                          ),
+                        );
+                      } else {
+                        return Container(
+                          child: Text(
+                            snapshot.data.email,
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
                 DataCell(
                   Text(
                       '${DateTime.parse(report.dateTime).day}/${DateTime.parse(report.dateTime).month}/${DateTime.parse(report.dateTime).year}'),
@@ -149,10 +192,14 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final locId = ModalRoute.of(context).settings.arguments as String;
-    print(locId);
-
     return Scaffold(
         backgroundColor: Colors.indigo[50],
         // drawer: AppDrawer(),
@@ -192,7 +239,16 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
             } else {
               return SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    Text(
+                      'All Reports',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w100,
+                      ),
+                    ),
                     SizedBox(
                       height: 20,
                     ),

@@ -9,12 +9,6 @@ import 'package:firebase_storage/firebase_storage.dart';
 class ReportsProvider with ChangeNotifier {
   List<Report> _reports = [];
 
-  List<Report> _userReports = [];
-
-  List<Report> _reportsLoc = [];
-
-  int _lifeTime;
-
   String authToken;
   String userId;
   Map<String, String> headers = new HashMap();
@@ -26,49 +20,22 @@ class ReportsProvider with ChangeNotifier {
     this.userId,
     // this._reports,
   );
-  //////
-  List<Report> get reports {
-    return [..._reports];
-  }
-
-  int get reportCount {
-    return _reports.length;
-  }
-
-  int get lifeTime {
-    return _lifeTime;
-  }
-
-  bool isOwnedby(Report report) {
-    return report.userName == userId ? true : false;
-  }
-
-  void removeReport(String id) {
-    _reports.removeWhere((rep) => rep.id == id);
-    notifyListeners();
-  }
-
-  Future<Report> findById(String id) async {
-    await fetchReport();
-    return _reports.firstWhere((rep) => rep.id == id);
-  }
 
   Future<void> deleteReport(Report report) async {
     String keyName;
-    StorageReference storageReference = FirebaseStorage.instance
-        .ref()
-        .child('reports/${report.loc}/${report.imgName}');
-    storageReference.delete().then((_) {
-      print('delete succesfully');
-    }).catchError((_) {
-      print(_);
-    });
+    // StorageReference storageReference = FirebaseStorage.instance
+    //     .ref()
+    //     .child('reports/${report.loc}/${report.imgName}');
+    // storageReference.delete().then((_) {
+    //   print('delete succesfully');
+    // }).catchError((_) {
+    //   print(_);
+    // });
     final url1 =
         'https://cparking-ecee0.firebaseio.com/reports/${report.id}.json';
     try {
       await http.delete(url1, headers: headers).then((_) {
         print('deletion report from user success');
-        removeReport(report.id);
         notifyListeners();
       }).then((_) async {
         final url2 =
@@ -84,7 +51,6 @@ class ReportsProvider with ChangeNotifier {
       }).then((_) async {
         final url3 =
             'https://cparking-ecee0.firebaseio.com/users/${report.userName}/reportsId/$keyName.json';
-
         await http.delete(url3, headers: headers).then((_) {
           print("delete from reportFolder complete");
         });
@@ -98,6 +64,7 @@ class ReportsProvider with ChangeNotifier {
     var data =
         await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
     var jsonData = json.decode(data.body) as Map<String, dynamic>;
+    if (jsonData == null) return 0;
     int count = 0;
     final now = DateTime.now();
     jsonData.forEach((key, value) {
@@ -111,6 +78,7 @@ class ReportsProvider with ChangeNotifier {
     var data =
         await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
     var jsonData = json.decode(data.body) as Map<String, dynamic>;
+    if (jsonData == null) return 0;
     int count = 0;
     final now = DateTime.now();
     jsonData.forEach((key, value) {
@@ -124,7 +92,7 @@ class ReportsProvider with ChangeNotifier {
     var data =
         await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
     var jsonData = json.decode(data.body) as Map;
-    return jsonData.length;
+    return jsonData == null ? 0 : jsonData.length;
   }
 
   Future<List<Report>> getReportsFromUserLoc(String loc) async {
@@ -133,6 +101,7 @@ class ReportsProvider with ChangeNotifier {
           await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
 
       final decodeData = json.decode(data.body) as Map<String, dynamic>;
+      if (decodeData == null) return null;
       List<Report> reports = [];
       decodeData.forEach((reportId, reportData) {
         if (loc == reportData['loc'].toString())
@@ -162,6 +131,7 @@ class ReportsProvider with ChangeNotifier {
           await http.get("https://cparking-ecee0.firebaseio.com/reports.json");
 
       final decodeData = json.decode(data.body) as Map<String, dynamic>;
+      if (decodeData == null) return null;
       List<Report> reports = [];
       decodeData.forEach((reportId, reportData) {
         reports.add(
@@ -187,19 +157,12 @@ class ReportsProvider with ChangeNotifier {
   Future<void> fetchReport() async {
     final url = 'https://cparking-ecee0.firebaseio.com/reports.json';
 
-    // final favUrl =
-    //     'https://cparking-ecee0.firebaseio.com/userPromoted/$userId.json';
-    //fetch and decode data
-
     try {
       final response = await http.get(url);
       final decodeData = json.decode(response.body) as Map<String, dynamic>;
       if (decodeData == null) {
         return;
       }
-      // final favResponse = await http.get(favUrl);
-      // final favData = json.decode(favResponse.body);
-      // print(favData);
 
       final List<Report> loadedProducts = [];
       decodeData.forEach((reportId, reportData) {

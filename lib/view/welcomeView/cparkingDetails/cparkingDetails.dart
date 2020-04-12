@@ -141,7 +141,11 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   FutureBuilder(
-                    future: Provider.of<UserProvider>(context).getUserCount(),
+                    future: Provider.of<UserProvider>(context)
+                        .getUserCount()
+                        .catchError((error) {
+                      print(error);
+                    }),
                     builder: (ctx, snapshot) {
                       if (snapshot.hasError) {
                         return Container(
@@ -174,7 +178,10 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                   SizedBox(width: 20),
                   FutureBuilder(
                     future: Provider.of<ReportsProvider>(context)
-                        .getAllReportsCount(),
+                        .getAllReportsCount()
+                        .catchError((error) {
+                      print(error);
+                    }),
                     builder: (ctx, snapshot) {
                       if (snapshot.hasError) {
                         return Container(
@@ -197,7 +204,7 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                         return CardTile(
                           iconBgColor: Colors.blueGrey,
                           cardTitle: 'Total reports',
-                          icon: Icons.select_all,
+                          icon: Icons.all_inclusive,
                           subText: 'All reports',
                           mainText: snapshot.data.toString(),
                         );
@@ -228,7 +235,7 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                         );
                       } else {
                         return CardTile(
-                          iconBgColor: weekDayColor(_value),
+                          iconBgColor: Colors.blueGrey,
                           cardTitle: 'Rep from today',
                           icon: Icons.today,
                           subText: 'Reports from ${weekDay(_value)}',
@@ -263,7 +270,7 @@ class _CparkingDetailsState extends State<CparkingDetails> {
                         return CardTile(
                           iconBgColor: Colors.blueGrey,
                           cardTitle: 'Rep from week',
-                          icon: Icons.today,
+                          icon: Icons.calendar_view_day,
                           subText: 'Reports from this week',
                           mainText: snapshot.data.toString(),
                         );
