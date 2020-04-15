@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import 'demo_data.dart';
+import 'demo_data.dart' as boardingModel;
 import 'main.dart';
 
 enum SummaryTheme { dark, light }
 
 class FlightSummary extends StatelessWidget {
-  final BoardingPassData boardingPass;
+  final boardingModel.BoardingPassData boardingPass;
   final SummaryTheme theme;
   final bool isOpen;
 
@@ -106,11 +106,11 @@ class FlightSummary extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Image.asset(
-                'assets/images/boarding_pass_card/flutter-logo.png',
-                width: 8,
+                'assets/images/logo_cpark2.png',
+                width: 20,
                 package: App.pkg),
           ),
-          Text('Fluttair'.toUpperCase(),
+          Text('cparking'.toUpperCase(),
               style: TextStyle(
                   color: mainTextColor,
                   fontFamily: 'OpenSans',
@@ -123,8 +123,8 @@ class FlightSummary extends StatelessWidget {
     if (theme == SummaryTheme.dark)
       return Padding(
         padding: const EdgeInsets.only(top: 2.0),
-        child: Image.asset('assets/images/boarding_pass_card/logo_white.png',
-            height: 12, package: App.pkg),
+        child: Image.asset('assets/images/logo_white.png',
+            height: 20, package: App.pkg),
       );
   }
 
@@ -147,8 +147,10 @@ class FlightSummary extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(boardingPass.passengerName.toUpperCase(), style: headerStyle),
-        Text('BOARDING ${boardingPass.boardingTime.format(context)}',
-            style: headerStyle),
+        Text(
+          '${boardingPass.boardingTime}',
+          style: headerStyle,
+        ),
       ],
     );
   }

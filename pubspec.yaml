@@ -54,6 +54,7 @@ flutter:
   assets:
     - assets/images/logo.png
     - assets/images/logo_cpark2.png
+    - assets/images/logo_white.png
     - assets/images/boarding_pass_card/airplane_blue.png
     - assets/images/boarding_pass_card/airplane_white.png
     - assets/images/boarding_pass_card/barcode.png

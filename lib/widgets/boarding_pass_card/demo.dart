@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'demo_data.dart';
+import 'demo_data.dart' as boardingModel;
 import 'main.dart';
 import 'ticket.dart';
 
@@ -10,7 +10,8 @@ class TicketFoldDemo extends StatefulWidget {
 }
 
 class _TicketFoldDemoState extends State<TicketFoldDemo> {
-  final List<BoardingPassData> _boardingPasses = DemoData().boardingPasses;
+  final List<boardingModel.BoardingPassData> _boardingPasses =
+      boardingModel.DemoData().boardingPasses;
 
   final Color _backgroundColor = Color(0xFFf0f0f0);
 

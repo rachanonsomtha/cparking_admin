@@ -285,11 +285,6 @@ class _UserDetailPageState extends State<UserDetailPage> {
                           snapshot.data,
                         ),
                       ),
-                      Container(
-                        height: 1000,
-                        width: double.infinity,
-                        child: TicketFoldDemo(),
-                      ),
                     ],
                   );
                 }

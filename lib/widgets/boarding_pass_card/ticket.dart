@@ -6,14 +6,21 @@ import 'flight_barcode.dart';
 import 'flight_details.dart';
 import 'flight_summary.dart';
 import 'folding_ticket.dart';
+import '../../provider/reportProvider/report.dart';
 
 class Ticket extends StatefulWidget {
   static const double nominalOpenHeight = 400;
   static const double nominalClosedHeight = 160;
   final BoardingPassData boardingPass;
+  final Report report;
   final Function onClick;
 
-  const Ticket({Key key, @required this.boardingPass, @required this.onClick}) : super(key: key);
+  const Ticket({
+    Key key,
+    @required this.boardingPass,
+    @required this.onClick,
+    @required this.report,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() => _TicketState();
 }
@@ -25,8 +32,9 @@ class _TicketState extends State<Ticket> {
   FlightBarcode bottomCard;
   bool _isOpen;
 
-  Widget get backCard =>
-      Container(decoration: BoxDecoration(borderRadius: BorderRadius.circular(4.0), color: Color(0xffdce6ef)));
+  Widget get backCard => Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4.0), color: Color(0xffdce6ef)));
 
   @override
   void initState() {
@@ -34,12 +42,13 @@ class _TicketState extends State<Ticket> {
     _isOpen = false;
     frontCard = FlightSummary(boardingPass: widget.boardingPass);
     middleCard = FlightDetails(widget.boardingPass);
-    bottomCard = FlightBarcode();
+    bottomCard = FlightBarcode(widget.report);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FoldingTicket(entries: _getEntries(), isOpen: _isOpen, onClick: _handleOnTap);
+    return FoldingTicket(
+        entries: _getEntries(), isOpen: _isOpen, onClick: _handleOnTap);
   }
 
   List<FoldEntry> _getEntries() {
@@ -54,7 +63,10 @@ class _TicketState extends State<Ticket> {
     widget.onClick();
     setState(() {
       _isOpen = !_isOpen;
-      topCard = FlightSummary(boardingPass: widget.boardingPass, theme: SummaryTheme.dark, isOpen: _isOpen);
+      topCard = FlightSummary(
+          boardingPass: widget.boardingPass,
+          theme: SummaryTheme.dark,
+          isOpen: _isOpen);
     });
   }
 }

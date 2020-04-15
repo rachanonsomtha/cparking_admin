@@ -35,19 +35,19 @@ class FlightDetails extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Gate'.toUpperCase(), style: titleTextStyle),
+                  Text('LifeTime'.toUpperCase(), style: titleTextStyle),
                   Text(boardingPass.gate, style: contentTextStyle),
                 ]),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Zone'.toUpperCase(), style: titleTextStyle),
+                  Text('Availability'.toUpperCase(), style: titleTextStyle),
                   Text(boardingPass.zone.toString(), style: contentTextStyle),
                 ]),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Seat'.toUpperCase(), style: titleTextStyle),
+                  Text('Score'.toUpperCase(), style: titleTextStyle),
                   Text(boardingPass.seat, style: contentTextStyle),
                 ]),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Class'.toUpperCase(), style: titleTextStyle),
+                  Text('ImageName'.toUpperCase(), style: titleTextStyle),
                   Text(boardingPass.flightClass, style: contentTextStyle),
                 ]),
               ],
@@ -56,15 +56,15 @@ class FlightDetails extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Flight'.toUpperCase(), style: titleTextStyle),
+                  Text('Rep.id'.toUpperCase(), style: titleTextStyle),
                   Text(boardingPass.flightNumber, style: contentTextStyle),
                 ]),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Departs'.toUpperCase(), style: titleTextStyle),
+                  Text('Report time starts'.toUpperCase(), style: titleTextStyle),
                   Text(DateFormat('MMM d, H:mm').format(boardingPass.departs).toUpperCase(), style: contentTextStyle),
                 ]),
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                  Text('Arrives'.toUpperCase(), style: titleTextStyle),
+                  Text('Report time ends'.toUpperCase(), style: titleTextStyle),
                   Text(DateFormat('MMM d, H:mm').format(boardingPass.arrives).toUpperCase(), style: contentTextStyle)
                 ]),
               ],

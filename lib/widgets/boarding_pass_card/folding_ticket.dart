@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class FoldingTicket extends StatefulWidget {
-  static const double padding = 16.0;
+  static const double padding = 20.0;
   final bool isOpen;
   final List<FoldEntry> entries;
   final Function onClick;
