@@ -1,14 +1,12 @@
-import 'package:c_admin/provider/reportProvider/report_provider.dart';
 import 'package:c_admin/provider/userProvider/user_provider.dart';
 import 'package:flutter/material.dart';
 import '../../provider/userProvider/user.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import '../../Navigation/navigation.dart';
 import '../../routing/route_names.dart';
 import '../../locator.dart';
 import '../../provider/reportProvider/report.dart';
 import 'package:provider/provider.dart';
+import '../../widgets/boarding_pass_card/demo.dart';
 
 class UserView extends StatefulWidget {
   static const routeName = '/user-view';
@@ -286,6 +284,11 @@ class _UserDetailPageState extends State<UserDetailPage> {
                         child: dataBody(
                           snapshot.data,
                         ),
+                      ),
+                      Container(
+                        height: 1000,
+                        width: double.infinity,
+                        child: TicketFoldDemo(),
                       ),
                     ],
                   );

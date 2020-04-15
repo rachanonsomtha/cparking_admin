@@ -129,8 +129,8 @@ class BarChartSample1State extends State<BarChartSample1> {
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: widget
-                .parkingLotDetail.max, // height of each rod >> lot.max here
+            y: widget.parkingLotDetail.max +
+                1, // height of each rod >> lot.max here
             color: barBackgroundColor,
           ),
         ),

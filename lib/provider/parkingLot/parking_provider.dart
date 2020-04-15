@@ -112,7 +112,7 @@ class ParkingLotProvider with ChangeNotifier {
             meanList1.add(int.parse(value['mean']));
           });
           var result = meanList1.reduce((a, b) => a + b) / meanList1.length;
-          meanList2.add(result.floorToDouble());
+          meanList2.add(result.round().toDouble());
         });
         meanList.add(meanList2);
 
