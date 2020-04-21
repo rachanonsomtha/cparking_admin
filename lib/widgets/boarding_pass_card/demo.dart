@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'demo_data.dart' as boardingModel;
-import 'main.dart';
 import 'ticket.dart';
 
 class TicketFoldDemo extends StatefulWidget {
@@ -13,7 +12,6 @@ class _TicketFoldDemoState extends State<TicketFoldDemo> {
   final List<boardingModel.BoardingPassData> _boardingPasses =
       boardingModel.DemoData().boardingPasses;
 
-  final Color _backgroundColor = Color(0xFFf0f0f0);
 
   final ScrollController _scrollController = ScrollController();
 
@@ -30,6 +28,7 @@ class _TicketFoldDemoState extends State<TicketFoldDemo> {
             itemCount: _boardingPasses.length,
             itemBuilder: (BuildContext context, int index) {
               return Ticket(
+                report: null,
                 boardingPass: _boardingPasses.elementAt(index),
                 onClick: () => _handleClickedTicket(index),
               );
@@ -70,32 +69,5 @@ class _TicketFoldDemoState extends State<TicketFoldDemo> {
     return _openTickets.where((int index) => index < ticketIndex).length;
   }
 
-  Widget _buildAppBar() {
-    Color appBarIconsColor = Color(0xFF212121);
-    return AppBar(
-      leading: Icon(Icons.arrow_back, color: appBarIconsColor),
-      actions: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(right: 18.0),
-          child: Icon(Icons.more_horiz, color: appBarIconsColor, size: 28),
-        )
-      ],
-      brightness: Brightness.light,
-      backgroundColor: _backgroundColor,
-      elevation: 0,
-      title: Container(
-        width: double.infinity,
-        alignment: Alignment.center,
-        child: Text('Boarding Passes'.toUpperCase(),
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 15,
-                letterSpacing: 0.5,
-                color: appBarIconsColor,
-                fontFamily: 'OpenSans',
-                fontWeight: FontWeight.bold,
-                package: App.pkg)),
-      ),
-    );
-  }
+  
 }

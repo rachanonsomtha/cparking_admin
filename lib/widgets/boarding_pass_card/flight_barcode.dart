@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../provider/reportProvider/report_provider.dart';
-import 'package:provider/provider.dart';
-import '../../Navigation/navigation.dart';
-import '../../routing/route_names.dart';
-import '../../locator.dart';
 import '../../provider/reportProvider/report.dart';
+import '../custom_dialog/custom_dialog.dart';
 
 class FlightBarcode extends StatelessWidget {
-  final NavigationService _navigationService = locator<NavigationService>();
   final Report report;
 
   FlightBarcode(this.report);
@@ -24,13 +19,19 @@ class FlightBarcode extends StatelessWidget {
               color: Colors.red,
             ),
             hoverColor: Colors.red[300],
-            child: Text('Delete this report'),
-            onPressed: () async {
-              await Provider.of<ReportsProvider>(context)
-                  .deleteReport(report)
-                  .whenComplete(() => {
-                        _navigationService.navigateTo(ReportRoute),
-                      });
+            child: Text('Delete this report?'),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) => CustomDialog(
+                  deleteText: 'Confirmed',
+                  report: report,
+                  title: "Delete this report?",
+                  description:
+                      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                  buttonText: "Cancel",
+                ),
+              );
             },
           ),
         ),

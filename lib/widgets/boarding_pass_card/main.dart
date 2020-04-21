@@ -13,7 +13,7 @@ class App extends StatelessWidget {
     const title = 'Ticket Fold Demo';
     return MaterialApp(
       title: title,
-      home: TicketFoldDemo(),
+      home: null,
     );
   }
 }

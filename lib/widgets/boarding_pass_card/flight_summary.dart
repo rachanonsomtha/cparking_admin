@@ -10,13 +10,15 @@ class FlightSummary extends StatelessWidget {
   final boardingModel.BoardingPassData boardingPass;
   final SummaryTheme theme;
   final bool isOpen;
+  final String imageUrl;
 
-  const FlightSummary(
-      {Key key,
-      this.boardingPass,
-      this.theme = SummaryTheme.light,
-      this.isOpen = false})
-      : super(key: key);
+  const FlightSummary({
+    Key key,
+    this.boardingPass,
+    this.theme = SummaryTheme.light,
+    this.isOpen = false,
+    @required this.imageUrl,
+  }) : super(key: key);
 
   Color get mainTextColor {
     Color textColor;
@@ -66,9 +68,9 @@ class FlightSummary extends StatelessWidget {
                   Align(
                       alignment: Alignment.centerLeft,
                       child: _buildTicketOrigin()),
-                  Align(
-                      alignment: Alignment.center,
-                      child: _buildTicketDuration()),
+                  // Align(
+                  //     alignment: Alignment.center,
+                  //     child: _buildTicketDuration()),
                   Align(
                       alignment: Alignment.centerRight,
                       child: _buildTicketDestination())
@@ -92,8 +94,9 @@ class FlightSummary extends StatelessWidget {
       return BoxDecoration(
         borderRadius: BorderRadius.circular(4.0),
         image: DecorationImage(
-            image: AssetImage('assets/images/boarding_pass_card/bg_blue.png',
-                package: App.pkg),
+            image: NetworkImage(
+              imageUrl,
+            ),
             fit: BoxFit.cover),
       );
   }
@@ -105,10 +108,8 @@ class FlightSummary extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Image.asset(
-                'assets/images/logo_cpark2.png',
-                width: 20,
-                package: App.pkg),
+            child: Image.asset('assets/images/logo_cpark2.png',
+                width: 20, package: App.pkg),
           ),
           Text('cparking'.toUpperCase(),
               style: TextStyle(
@@ -123,8 +124,8 @@ class FlightSummary extends StatelessWidget {
     if (theme == SummaryTheme.dark)
       return Padding(
         padding: const EdgeInsets.only(top: 2.0),
-        child: Image.asset('assets/images/logo_white.png',
-            height: 20, package: App.pkg),
+        child: Image.asset('assets/images/logo_cpark1.png',
+            height: 30, package: App.pkg),
       );
   }
 

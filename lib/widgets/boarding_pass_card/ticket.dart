@@ -40,7 +40,10 @@ class _TicketState extends State<Ticket> {
   void initState() {
     super.initState();
     _isOpen = false;
-    frontCard = FlightSummary(boardingPass: widget.boardingPass);
+    frontCard = FlightSummary(
+      boardingPass: widget.boardingPass,
+      imageUrl: widget.report.imageUrl,
+    );
     middleCard = FlightDetails(widget.boardingPass);
     bottomCard = FlightBarcode(widget.report);
   }
@@ -64,6 +67,7 @@ class _TicketState extends State<Ticket> {
     setState(() {
       _isOpen = !_isOpen;
       topCard = FlightSummary(
+          imageUrl: widget.report.imageUrl,
           boardingPass: widget.boardingPass,
           theme: SummaryTheme.dark,
           isOpen: _isOpen);

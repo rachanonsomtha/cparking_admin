@@ -113,8 +113,24 @@ class _ReportOverViewScreenState extends State<ReportOverViewScreen> {
                 DataCell(
                   Container(
                     height: 50,
-                    child: Image.network(
-                      report.imageUrl,
+                    child: ClipRRect(
+                      child: Container(
+                        child: Image.network(
+                          report.imageUrl.toString(),
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Center(
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.indigo,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
                   // Text(report.id.toString()),

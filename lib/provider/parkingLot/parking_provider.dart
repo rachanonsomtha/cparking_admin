@@ -115,13 +115,6 @@ class ParkingLotProvider with ChangeNotifier {
           meanList2.add(result.round().toDouble());
         });
         meanList.add(meanList2);
-
-        // print(value[weekDay]);
-
-        // hour.forEach((element) {
-        //   print(value[weekDay][element]);
-        // });
-        // final val = value[weekDay] as Map<String, dynamic>;
       });
       return meanList;
     } catch (error) {
